@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import json
+import pandas as pd
+import openpyxl
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QInputDialog,QTableWidgetItem
 from tkinter import filedialog
@@ -102,7 +104,7 @@ class Ui_valuer(object):
         self.studentButton.setObjectName("studentButton")
         self.studentButton.clicked.connect(self.createInputDialogStudent)
         self.scoreButton = QtWidgets.QPushButton(self.centralwidget)
-        self.scoreButton.setGeometry(QtCore.QRect(570, 450, 273, 71))
+        self.scoreButton.setGeometry(QtCore.QRect(490, 450, 233, 71))
         font = QtGui.QFont()
         font.setFamily("Rubik")
         font.setPointSize(10)
@@ -119,7 +121,7 @@ class Ui_valuer(object):
         self.removeButton.setObjectName("removeButton")
         self.removeButton.clicked.connect(self.deleteRow)
         self.nameButton = QtWidgets.QPushButton(self.centralwidget)
-        self.nameButton.setGeometry(QtCore.QRect(10, 450, 273, 71))
+        self.nameButton.setGeometry(QtCore.QRect(10, 450, 233, 71))
         font = QtGui.QFont()
         font.setFamily("Rubik")
         font.setPointSize(10)
@@ -127,7 +129,7 @@ class Ui_valuer(object):
         self.nameButton.setObjectName("nameButton")
         self.nameButton.clicked.connect(self.createInputDialogName)
         self.lessonButton = QtWidgets.QPushButton(self.centralwidget)
-        self.lessonButton.setGeometry(QtCore.QRect(290, 450, 273, 71))
+        self.lessonButton.setGeometry(QtCore.QRect(250, 450, 233, 71))
         font = QtGui.QFont()
         font.setFamily("Rubik")
         font.setPointSize(10)
@@ -162,6 +164,34 @@ class Ui_valuer(object):
         self.diagramButton.setIconSize(QtCore.QSize(32, 32))
         self.diagramButton.setObjectName("diagramButton")
         self.diagramButton.clicked.connect(self.showDiagram)
+        # self.excelImportButton = QtWidgets.QPushButton(self.centralwidget)
+        # self.excelImportButton.setGeometry(QtCore.QRect(732, 450, 111, 35))
+        # font = QtGui.QFont()
+        # font.setFamily("Rubik")
+        # font.setPointSize(10)
+        # self.excelImportButton.setFont(font)
+        # self.excelImportButton.setStyleSheet("color: rgb(0, 181, 12);")
+        # self.excelImportButton.setText("IMPORT")
+        # icon2 = QtGui.QIcon()
+        # icon2.addPixmap(QtGui.QPixmap("icons/excel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        # self.excelImportButton.setIcon(icon2)
+        # self.excelImportButton.setIconSize(QtCore.QSize(32, 32))
+        # self.excelImportButton.setObjectName("diagramButton")
+        # self.excelImportButton.clicked.connect(self.load_data_excel)
+        self.excelSaveButton = QtWidgets.QPushButton(self.centralwidget)
+        self.excelSaveButton.setGeometry(QtCore.QRect(732, 450, 111, 71))
+        font = QtGui.QFont()
+        font.setFamily("Rubik")
+        font.setPointSize(10)
+        self.excelSaveButton.setFont(font)
+        self.excelSaveButton.setStyleSheet("color: rgb(0, 181, 12);")
+        self.excelSaveButton.setText("SAVE    ")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("icons/excel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.excelSaveButton.setIcon(icon2)
+        self.excelSaveButton.setIconSize(QtCore.QSize(32, 32))
+        self.excelSaveButton.setObjectName("diagramButton")
+        self.excelSaveButton.clicked.connect(self.save_excel)
         self.saveButton = QtWidgets.QPushButton(self.centralwidget)
         self.saveButton.setGeometry(QtCore.QRect(732, 398, 111, 43))
         font = QtGui.QFont()
@@ -172,8 +202,13 @@ class Ui_valuer(object):
         self.saveButton.setIconSize(QtCore.QSize(24, 24))
         self.saveButton.setObjectName("saveButton")
         self.saveButton.clicked.connect(self.save_data)
+        self.excelSaveButton.setText("SAVE      ")
         self.importButton = QtWidgets.QPushButton(self.centralwidget)
         self.importButton.setGeometry(QtCore.QRect(732, 350, 111, 43))
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap("icons/json.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.importButton.setIcon(icon3)
+        self.saveButton.setIcon(icon3)
         font = QtGui.QFont()
         font.setFamily("Rubik")
         font.setPointSize(10)
@@ -203,17 +238,61 @@ class Ui_valuer(object):
         self.scoreButton.setText(_translate("valuer", "+Баллы"))
         self.nameButton.setText(_translate("valuer", "+Имя"))
         self.lessonButton.setText(_translate("valuer", "+Предмет"))
-        self.saveButton.setText(_translate("valuer", "SAVE"))
+        self.saveButton.setText(_translate("valuer", " SAVE     "))
         self.importButton.setText(_translate("valuer", "IMPORT"))
 
     # Функция сохраняет данные в файл формата json
     def save_data(self):
         if self.students_data and self.subjects:
             file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
-            with open(file_path, 'w') as f:
-                json.dump({'students_data': self.students_data, 'subjects': self.subjects}, f)
+            try:
+                with open(file_path, 'w') as f:
+                    json.dump({'students_data': self.students_data, 'subjects': self.subjects}, f)
+            except FileNotFoundError:
+                print('Файл не найден')
+            
         else:
             print("Нету данных для сохранения!")
+
+    def save_excel(self):
+        if self.students_data:
+            file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")])
+            try:
+                data_renamed = []
+                for student_data in self.students_data:
+                    student_data_renamed = {
+                        'Имя': student_data.pop('name'),
+                    }
+                    for i, subject in enumerate(self.subjects, 1):
+                        if f'lesson{i}' in student_data:
+                            student_data_renamed[subject] = student_data.pop(f'lesson{i}')
+                    if 'average_grade' in student_data:
+                        student_data_renamed['Средний балл'] = student_data.pop('average_grade')
+                    if 'grade' in student_data:
+                        student_data_renamed['Оценка'] = student_data.pop('grade')
+
+                    # Exclude 'grades' field from the data
+                    student_data_renamed.update({k: v for k, v in student_data.items() if k not in ['name', 'grades', 'average_grade', 'grade']})
+                    data_renamed.append(student_data_renamed)
+
+                df = pd.DataFrame(data_renamed)
+                df.to_excel(file_path, index=False)
+
+                # Set column widths using openpyxl
+                column_widths = {'A': 20, 'B': 30, 'C': 30, 'D': 15, 'E': 10, 'F': 15}
+                workbook = openpyxl.load_workbook(file_path)
+                worksheet = workbook.active
+                for column, width in column_widths.items():
+                    worksheet.column_dimensions[column].width = width
+                workbook.save(file_path)
+
+                print("Data saved to Excel - Successfully.")
+            except FileNotFoundError:
+                print('FileNotFoundError: Некорректный путь к файлу')
+            except KeyError:
+                print('KeyError: Ключ не найден')
+        else:
+            print("No data to save!")
 
     # Загрузка данных с файла
     def load_data(self):
@@ -244,6 +323,55 @@ class Ui_valuer(object):
             self.subjects = []
         except KeyError as ex:
             print('KeyError: В файле нету данных')
+            self.students_data = []
+            self.subjects = []
+
+    def load_data_excel(self):
+        try:
+            file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+            if not file_path:
+                return
+            df = pd.read_excel(file_path)
+
+            # Convert the DataFrame to a list of dictionaries
+            data = df.to_dict(orient='records')
+
+            # # Clear the current data and subjects lists
+            # self.students_data = []
+            # self.subjects = []
+
+            # Add the data to the students_data list
+            workbook = openpyxl.load_workbook(file_path)
+            sheet = workbook.active
+
+            self.tableWidget.setRowCount(sheet.max_row + 1)
+            self.tableWidget.setRowCount(sheet.max_column)
+
+            list_values = list(sheet.values)
+            self.tableWidget.setHorizontalHeaderLabels(list_values[0])
+            
+            row_index = 0
+            for value_tuple in list_values[1:]:
+                column_index = 0
+                for value in value_tuple:
+                    self.tableWidget.setItem(row_index ,column_index ,QTableWidgetItem(str(value)))
+                    column_index += 1
+                row_index += 1
+
+
+            # Update the table headers and display the data
+            # self.updateTableHeaders()
+            # self.data()
+            # self.calculate()
+            print("Data loaded - Successfully.")
+
+        except FileNotFoundError as ex:
+            print('FileNotFoundError: Некорректный путь к файлу')
+            print(ex)
+            self.students_data = []
+            self.subjects = []
+        except Exception as ex:
+            print('Exception:', ex)
             self.students_data = []
             self.subjects = []
 

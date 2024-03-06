@@ -7,6 +7,7 @@ class Ui_MainWindow(object):
     auth_attempts = 3
 
     def valuer_call(self):
+        MainWindow.hide()
         subprocess.run(['python', 'valuer.py'])
 
     def setupUi(self, MainWindow):
@@ -38,7 +39,7 @@ class Ui_MainWindow(object):
         self.logo.setScaledContents(True)
         self.logo.setObjectName("logo")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(100, 120, 121, 21))
+        self.label.setGeometry(QtCore.QRect(95, 120, 121, 21))
         self.label.setStyleSheet("color: rgb(255, 0, 4);")
         self.label.setText("")
         self.label.setObjectName("label")
@@ -94,7 +95,7 @@ class Ui_MainWindow(object):
             self.auth_button.setEnabled(False)
         else: 
             self.label.setStyleSheet("color: rgb(255, 0, 4);")
-            self.label.setText(f'Осталось попыток {self.auth_attempts}')
+            self.label.setText(f'Осталось попыток: {self.auth_attempts}')
             self.auth_attempts -=1
 
 
