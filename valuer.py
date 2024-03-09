@@ -32,7 +32,6 @@ class RatingDialog(QtWidgets.QDialog, QtWidgets.QWidget):
 
     def populate_table(self):
         sorted_students_data = sorted(self.students_data, key=lambda x: x["average_grade"], reverse=True)
-        
         self.tableWidget.setRowCount(len(sorted_students_data))
 
         for row in range(len(sorted_students_data)):
@@ -51,10 +50,13 @@ class Ui_valuer(object):
 
     def setupUi(self, valuer):
         valuer.setObjectName("valuer")
+        valuer.resize(858, 538)
         valuer.setFixedSize(858, 538)
         valuer.setWindowIcon(QtGui.QIcon('student.png'))
         self.centralwidget = QtWidgets.QWidget(valuer)
         self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(10, 20, 713, 421))
         self.tableWidget.setObjectName("tableWidget")
@@ -62,84 +64,98 @@ class Ui_valuer(object):
         self.tableWidget.setRowCount(0)
         self.tableWidget.horizontalHeader().setVisible(True)
         self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
-        self.tableWidget.horizontalHeader().setDefaultSectionSize(130)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(115)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.verticalHeader().setVisible(False)
         item = QtWidgets.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(9)
         item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(9)
         item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(9)
         item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(9)
         item.setFont(font)
         self.tableWidget.setHorizontalHeaderItem(3, item)
+        #studentButton - добавление ячейки
         self.studentButton = QtWidgets.QPushButton(self.centralwidget)
-        self.studentButton.setGeometry(QtCore.QRect(732, 18, 111, 71))
+        self.studentButton.setGeometry(QtCore.QRect(732, 18, 111, 56))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(20)
         self.studentButton.setFont(font)
         self.studentButton.setStyleSheet("color: rgb(0, 181, 12);")
         self.studentButton.setIconSize(QtCore.QSize(24, 24))
         self.studentButton.setObjectName("studentButton")
         self.studentButton.clicked.connect(self.createInputDialogStudent)
+        #scoreButton - добавление оценок
         self.scoreButton = QtWidgets.QPushButton(self.centralwidget)
         self.scoreButton.setGeometry(QtCore.QRect(490, 450, 233, 71))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.scoreButton.setFont(font)
         self.scoreButton.setObjectName("scoreButton")
         self.scoreButton.clicked.connect(self.createInputDialogGrade)
+        #removeButton - удаление ячеек
         self.removeButton = QtWidgets.QPushButton(self.centralwidget)
-        self.removeButton.setGeometry(QtCore.QRect(732, 98, 111, 71))
-        self.removeButton.setText("")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("icons/delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.removeButton.setIcon(icon)
+        self.removeButton.setGeometry(QtCore.QRect(732, 360, 111, 39))
+        self.removeButton.setText("Удалить студента")
+        self.removeButton.setStyleSheet("color: rgb(200, 50, 30);")
         self.removeButton.setIconSize(QtCore.QSize(24, 24))
         self.removeButton.setObjectName("removeButton")
         self.removeButton.clicked.connect(self.deleteRow)
+        #removeAllButton - удаление ячеек
+        self.removeAllButton = QtWidgets.QPushButton(self.centralwidget)
+        self.removeAllButton.setGeometry(QtCore.QRect(732, 450, 111, 71))
+        self.removeAllButton.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icons/delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.removeAllButton.setIcon(icon)
+        self.removeAllButton.setIconSize(QtCore.QSize(24, 24))
+        self.removeAllButton.setStyleSheet("color: rgb(200, 50, 30);")
+        self.removeAllButton.setObjectName("removeButton")
+        self.removeAllButton.clicked.connect(self.deleteAll)
+        #removeLessonButton - удаление предмета
+        self.removeLessonButton = QtWidgets.QPushButton(self.centralwidget)
+        self.removeLessonButton.setGeometry(QtCore.QRect(732, 403, 111, 39))
+        self.removeLessonButton.setText("Удалить предмет")
+        self.removeLessonButton.setStyleSheet("color: rgb(200, 50, 30);")
+        self.removeLessonButton.setIconSize(QtCore.QSize(24, 24))
+        self.removeLessonButton.setObjectName("removeButton")
+        self.removeLessonButton.clicked.connect(self.deleteLesson)
+        #nameButton - добавление имени
         self.nameButton = QtWidgets.QPushButton(self.centralwidget)
         self.nameButton.setGeometry(QtCore.QRect(10, 450, 233, 71))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.nameButton.setFont(font)
         self.nameButton.setObjectName("nameButton")
         self.nameButton.clicked.connect(self.createInputDialogName)
+        #lessonButton - добавление предмета
         self.lessonButton = QtWidgets.QPushButton(self.centralwidget)
         self.lessonButton.setGeometry(QtCore.QRect(250, 450, 233, 71))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.lessonButton.setFont(font)
         self.lessonButton.setObjectName("lessonButton")
         self.lessonButton.clicked.connect(self.createInputDialogLesson)
+        #ratingButton - рейтинг
         self.ratingButton = QtWidgets.QPushButton(self.centralwidget)
-        self.ratingButton.setGeometry(QtCore.QRect(732, 178, 111, 83))
+        self.ratingButton.setGeometry(QtCore.QRect(732, 81, 111, 50))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.ratingButton.setFont(font)
         self.ratingButton.setStyleSheet("color: rgb(248, 248, 9);")
@@ -150,10 +166,10 @@ class Ui_valuer(object):
         self.ratingButton.setIcon(icon1)
         self.ratingButton.setIconSize(QtCore.QSize(24, 24))
         self.ratingButton.setObjectName("ratingButton")
+        #diagramButton - диаграмма
         self.diagramButton = QtWidgets.QPushButton(self.centralwidget)
-        self.diagramButton.setGeometry(QtCore.QRect(732, 270, 111, 71))
+        self.diagramButton.setGeometry(QtCore.QRect(732, 136, 111, 53))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.diagramButton.setFont(font)
         self.diagramButton.setStyleSheet("color: rgb(248, 248, 9);")
@@ -167,7 +183,7 @@ class Ui_valuer(object):
         # self.excelImportButton = QtWidgets.QPushButton(self.centralwidget)
         # self.excelImportButton.setGeometry(QtCore.QRect(732, 450, 111, 35))
         # font = QtGui.QFont()
-        # font.setFamily("Rubik")
+    
         # font.setPointSize(10)
         # self.excelImportButton.setFont(font)
         # self.excelImportButton.setStyleSheet("color: rgb(0, 181, 12);")
@@ -178,42 +194,35 @@ class Ui_valuer(object):
         # self.excelImportButton.setIconSize(QtCore.QSize(32, 32))
         # self.excelImportButton.setObjectName("diagramButton")
         # self.excelImportButton.clicked.connect(self.load_data_excel)
+
+        #excelSaveButton - сохранение таблицы в excel
         self.excelSaveButton = QtWidgets.QPushButton(self.centralwidget)
-        self.excelSaveButton.setGeometry(QtCore.QRect(732, 450, 111, 71))
+        self.excelSaveButton.setGeometry(QtCore.QRect(732, 194, 111, 50))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.excelSaveButton.setFont(font)
         self.excelSaveButton.setStyleSheet("color: rgb(0, 181, 12);")
-        self.excelSaveButton.setText("SAVE    ")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("icons/excel.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.excelSaveButton.setIcon(icon2)
         self.excelSaveButton.setIconSize(QtCore.QSize(32, 32))
-        self.excelSaveButton.setObjectName("diagramButton")
+        self.excelSaveButton.setObjectName("excelButton")
+        self.excelSaveButton.setText("Сохранить Excel")
         self.excelSaveButton.clicked.connect(self.save_excel)
+        #saveButton - сохранение таблицы в json
         self.saveButton = QtWidgets.QPushButton(self.centralwidget)
-        self.saveButton.setGeometry(QtCore.QRect(732, 398, 111, 43))
+        self.saveButton.setGeometry(QtCore.QRect(732, 249, 111, 50))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.saveButton.setFont(font)
-        self.saveButton.setStyleSheet("color: rgb(103, 118, 255);")
+        self.saveButton.setStyleSheet("color: rgb(103, 118, 250);")
         self.saveButton.setIconSize(QtCore.QSize(24, 24))
         self.saveButton.setObjectName("saveButton")
         self.saveButton.clicked.connect(self.save_data)
-        self.excelSaveButton.setText("SAVE      ")
+        #importButton - импорт таблицы с json
         self.importButton = QtWidgets.QPushButton(self.centralwidget)
-        self.importButton.setGeometry(QtCore.QRect(732, 350, 111, 43))
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("icons/json.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.importButton.setIcon(icon3)
-        self.saveButton.setIcon(icon3)
+        self.importButton.setGeometry(QtCore.QRect(732, 304, 111, 50))
         font = QtGui.QFont()
-        font.setFamily("Rubik")
         font.setPointSize(10)
         self.importButton.setFont(font)
-        self.importButton.setStyleSheet("color: rgb(103, 118, 255);")
+        self.importButton.setStyleSheet("color: rgb(103, 118, 250);")
         self.importButton.setIconSize(QtCore.QSize(24, 24))
         self.importButton.setObjectName("importButton")
         self.importButton.clicked.connect(self.load_data)
@@ -235,11 +244,11 @@ class Ui_valuer(object):
         item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("valuer", "Оценка"))
         self.studentButton.setText(_translate("valuer", "+"))
-        self.scoreButton.setText(_translate("valuer", "+Баллы"))
-        self.nameButton.setText(_translate("valuer", "+Имя"))
-        self.lessonButton.setText(_translate("valuer", "+Предмет"))
-        self.saveButton.setText(_translate("valuer", " SAVE     "))
-        self.importButton.setText(_translate("valuer", "IMPORT"))
+        self.scoreButton.setText(_translate("valuer", "Добавить оценки"))
+        self.nameButton.setText(_translate("valuer", "Добавить имя"))
+        self.lessonButton.setText(_translate("valuer", "Добавить предмет"))
+        self.saveButton.setText(_translate("valuer", "Сохранить json"))
+        self.importButton.setText(_translate("valuer", "Импорт в json"))
 
     # Функция сохраняет данные в файл формата json
     def save_data(self):
@@ -279,7 +288,7 @@ class Ui_valuer(object):
                 df.to_excel(file_path, index=False)
 
                 # Set column widths using openpyxl
-                column_widths = {'A': 20, 'B': 30, 'C': 30, 'D': 15, 'E': 10, 'F': 15}
+                column_widths = {'A': 20, 'B': 20, 'C': 20, 'D': 20, 'E': 20, 'F': 20, 'G': 20, 'H': 20, 'I': 20, 'J': 20}
                 workbook = openpyxl.load_workbook(file_path)
                 worksheet = workbook.active
                 for column, width in column_widths.items():
@@ -291,6 +300,8 @@ class Ui_valuer(object):
                 print('FileNotFoundError: Некорректный путь к файлу')
             except KeyError:
                 print('KeyError: Ключ не найден')
+            except ValueError:
+                print('ValuerError: Отмена выбора')
         else:
             print("No data to save!")
 
@@ -379,7 +390,10 @@ class Ui_valuer(object):
     def createInputDialogLesson(self):
         lesson, ok = QInputDialog.getText(None, 'Добавить предмет', 'Введите название предмета')
         if ok and lesson:
+            for row in range(self.tableWidget.rowCount()):
+                self.tableWidget.setItem(row, len(self.subjects) + 1, QtWidgets.QTableWidgetItem())
             self.subjects.append(lesson)
+            print(self.subjects)
             self.updateTableHeaders()
             self.calculate()
 
@@ -400,6 +414,7 @@ class Ui_valuer(object):
                 self.tableWidget.setItem(row, i, QTableWidgetItem(str(student['lesson{}'.format(i)])))
             row += 1
 
+
     def showDiagram(self):
         grades = [student['average_grade'] for student in self.students_data]
         names = [student['name'] for student in self.students_data]
@@ -413,6 +428,7 @@ class Ui_valuer(object):
         plt.tight_layout()
         plt.show()
         pass
+
 
     def createInputDialogGrade(self):
         print(self.students_data,'\n', self.subjects)
@@ -469,39 +485,37 @@ class Ui_valuer(object):
                 print(e)
                 print('Вы ввели некорекктное значение')
 
+
     def calculate(self):
-        if self.students_data == []:
-            print('pass')
-            pass
-        else:
-            print('calculate')
-            selected_row = self.tableWidget.currentRow()
-            student_data = self.students_data[selected_row]
-            grades = student_data['grades']
-            try:
+        if not self.students_data:
+            print('No students data to calculate.')
+            return
+
+        for row in range(self.tableWidget.rowCount()):
+            student_data = self.students_data[row]
+            grades = student_data.get('grades', [])
+
+            if not grades:
+                average_grade = 0
+            else:
                 average_grade = sum(grades) / len(grades)
-                student_data['average_grade'] = average_grade
 
-                if average_grade >= 90:
-                    student_data['grade'] = '5'
-                    grade = 5
-                elif average_grade >= 70 and average_grade < 90:
-                    student_data['grade'] = '4'
-                    grade = 4
-                elif average_grade >= 0 and average_grade < 70:
-                    student_data['grade'] = '3'
-                    grade = 3
-                elif average_grade >= 0 and average_grade < 50:
-                    student_data['grade'] = '2'
-                    grade = 2
-                self.tableWidget.setItem(selected_row, len(self.subjects) + 1, QtWidgets.QTableWidgetItem(str(round(average_grade))))
-                self.tableWidget.setItem(selected_row, len(self.subjects) + 2, QtWidgets.QTableWidgetItem(str(grade)))
+            student_data['average_grade'] = average_grade
 
-            except ZeroDivisionError:
-                print('Массив пуст')
+            if average_grade >= 90:
+                grade = '5'
+            elif average_grade >= 70:
+                grade = '4'
+            elif average_grade >= 60:
+                grade = '3'
+            else:
+                grade = '2'
 
-            except IndexError:
-                print('IndexError')
+            student_data['grade'] = grade
+
+            self.tableWidget.setItem(row, len(self.subjects) + 1, QtWidgets.QTableWidgetItem(str(round(average_grade, 2))))
+            self.tableWidget.setItem(row, len(self.subjects) + 2, QtWidgets.QTableWidgetItem(str(grade)))
+
 
     def createInputDialogStudent(self):
         self.students_data.append({"name": '', "grades": [], "average_grade": 0, "grade":0})
@@ -533,6 +547,20 @@ class Ui_valuer(object):
             print('indexerror')
 
 
+    def deleteLesson(self):
+        row = 0
+        selected_column = self.tableWidget.currentColumn()
+        try:
+            current_lesson = str('lesson{}'.format(selected_column))
+            del self.subjects[selected_column - 1]
+            self.tableWidget.removeColumn(selected_column)
+            print(self.subjects, ' - deleteLesson')
+            for student in self.students_data:
+                student.pop(current_lesson)
+            self.calculate()
+        except KeyError as ex:
+            print(ex)
+
     def deleteRow(self):
         if self.tableWidget.rowCount() == 0:
              QtWidgets.QMessageBox.warning(
@@ -547,6 +575,14 @@ class Ui_valuer(object):
                     self.tableWidget.removeRow(selected_row)
                     self.students_data.pop(selected_row)
 
+    def deleteAll(self):
+        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setRowCount(0)
+        self.subjects = []
+        self.students_data = []
+        self.updateTableHeaders()
+        self.data()
+        self.calculate()
 
     def show_rating_dialog(self):
         dialog = RatingDialog(self.students_data)
