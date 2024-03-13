@@ -280,14 +280,12 @@ class Ui_valuer(object):
                     if 'grade' in student_data:
                         student_data_renamed['Оценка'] = student_data.pop('grade')
 
-                    # Exclude 'grades' field from the data
                     student_data_renamed.update({k: v for k, v in student_data.items() if k not in ['name', 'grades', 'average_grade', 'grade']})
                     data_renamed.append(student_data_renamed)
 
                 df = pd.DataFrame(data_renamed)
                 df.to_excel(file_path, index=False)
 
-                # Set column widths using openpyxl
                 column_widths = {'A': 20, 'B': 20, 'C': 20, 'D': 20, 'E': 20, 'F': 20, 'G': 20, 'H': 20, 'I': 20, 'J': 20}
                 workbook = openpyxl.load_workbook(file_path)
                 worksheet = workbook.active
@@ -295,7 +293,7 @@ class Ui_valuer(object):
                     worksheet.column_dimensions[column].width = width
                 workbook.save(file_path)
 
-                print("Data saved to Excel - Successfully.")
+                print("Данные сохранены удачно.")
             except FileNotFoundError:
                 print('FileNotFoundError: Некорректный путь к файлу')
             except KeyError:
